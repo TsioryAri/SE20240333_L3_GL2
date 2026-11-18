@@ -1,0 +1,161 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>{{ page_title }}</h1>
+        <p class="text-muted mb-0">Consultez et gérez les données</p>
+    </div>
+
+    {% if create_url %}
+        <a class="btn btn-primary" href="{% url create_url %}">
+            ＋ Ajouter
+        </a>
+    {% endif %}
+</div>
+
+<div class="panel table-responsive">
+<table class="table table-hover align-middle">
+
+<thead>
+<tr>
+    {% if page_title == 'Médicaments' %}
+        <th>Photo</th>
+        <th>Nom</th>
+        <th>Code</th>
+        <th>Catégorie</th>
+        <th>Prix de vente</th>
+        <th>Stock</th>
+        <th>État</th>
+        <th>Action</th>
+
+    {% elif page_title == 'Lots et stocks' %}
+        <th>Médicament</th>
+        <th>N° lot</th>
+        <th>Péremption</th>
+        <th>Quantité</th>
+        <th>Fournisseur</th>
+
+    {% elif page_title == 'Catégories' %}
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Action</th>
+
+    {% elif page_title == 'Fournisseurs' %}
+        <th>Nom</th>
+        <th>Téléphone</th>
+        <th>Email</th>
+        <th>Action</th>
+
+    {% elif page_title == 'Clients' %}
+        <th>Nom</th>
+        <th>Téléphone</th>
+        <th>Email</th>
+        <th>Action</th>
+    {% endif %}
+</tr>
+</thead>
+
+<tbody>
+{% for o in objects %}
+<tr>
+
+    {% if page_title == 'Médicaments' %}
+        <td>
+            {% if o.photo %}
+                <img src="{{ o.photo.url }}"
+                     alt="{{ o.nom }}"
+                     style="width:55px;height:55px;object-fit:contain;">
+            {% else %}
+                <span class="text-muted">Aucune photo</span>
+            {% endif %}
+        </td>
+        <td class="fw-semibold">{{ o.nom }}</td>
+        <td>{{ o.code }}</td>
+        <td>{{ o.categorie }}</td>
+        <td>{{ o.prix_vente }} Ar</td>
+        <td>{{ o.stock_total }}</td>
+        <td>
+            {% if o.actif %}
+                <span class="badge text-bg-success">Actif</span>
+            {% else %}
+                <span class="badge text-bg-secondary">Inactif</span>
+            {% endif %}
+        </td>
+        <td>
+            <a href="{% url 'medicine_update' o.pk %}">Modifier</a>
+        </td>
+
+    {% elif page_title == 'Lots et stocks' %}
+        <td>{{ o.medicament }}</td>
+        <td>{{ o.numero_lot }}</td>
+        <td>{{ o.date_peremption|date:"d/m/Y" }}</td>
+        <td>{{ o.quantite }}</td>
+        <td>{{ o.fournisseur|default:"—" }}</td>
+
+    {% elif page_title == 'Catégories' %}
+        <td class="fw-semibold">{{ o.nom }}</td>
+        <td>{{ o.description|default:"—" }}</td>
+        <td>
+            <a href="{% url 'category_update' o.pk %}">Modifier</a>
+        </td>
+
+    {% elif page_title == 'Fournisseurs' %}
+        <td class="fw-semibold">{{ o.nom }}</td>
+        <td>{{ o.telephone|default:"—" }}</td>
+        <td>{{ o.email|default:"—" }}</td>
+        <td>
+            <a href="{% url 'supplier_update' o.pk %}">Modifier</a>
+        </td>
+
+    {% elif page_title == 'Clients' %}
+        <td class="fw-semibold">{{ o.nom }}</td>
+        <td>{{ o.telephone|default:"—" }}</td>
+        <td>{{ o.email|default:"—" }}</td>
+        <td>
+            <a href="{% url 'customer_update' o.pk %}">Modifier</a>
+        </td>
+    {% endif %}
+
+</tr>
+
+{% empty %}
+<tr>
+    <td colspan="8" class="text-center text-muted py-4">
+        Aucune donnée pour le moment.
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% if is_paginated %}
+<nav>
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                Précédent
+            </a>
+        </li>
+    {% endif %}
+
+    <li class="page-item active">
+        <span class="page-link">{{ page_obj.number }}</span>
+    </li>
+
+    {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                Suivant
+            </a>
+        </li>
+    {% endif %}
+</ul>
+</nav>
+{% endif %}
+
+</div>
+{% endblock %}

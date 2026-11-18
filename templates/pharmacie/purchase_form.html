@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block content %}
+<div class="mb-4"><h1>{{ title }}</h1><p class="text-muted">Enregistrez une réception et ses lots. Les quantités seront ajoutées au stock à la validation.</p></div>
+<div class="panel"><form method="post">{% csrf_token %}{{ form.non_field_errors }}
+<div class="row g-3">{% for field in form %}<div class="col-md-6"><label class="form-label">{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>{% endfor %}</div>
+<hr><h5>Lignes de l'achat</h5>{{ formset.management_form }}
+<div id="purchase-lines">{% for f in formset %}<div class="purchase-line border rounded p-3 mb-3"><div class="row g-3">{% for field in f %}<div class="col-md-4"><label class="form-label">{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>{% endfor %}</div></div>{% endfor %}</div>
+<button type="button" class="btn btn-outline-secondary mb-3" id="add-line">＋ Ajouter une ligne</button><div><button class="btn btn-primary">Enregistrer la réception</button> <a class="btn btn-light" href="{% url 'purchase_list' %}">Annuler</a></div>
+</form></div>
+<script>
+(function(){const root=document.getElementById('purchase-lines'), add=document.getElementById('add-line'), total=document.getElementById('id_lines-TOTAL_FORMS');add.addEventListener('click',()=>{const first=root.querySelector('.purchase-line');const clone=first.cloneNode(true);clone.querySelectorAll('input,select,textarea').forEach(el=>{el.name=el.name.replace(/lines-(\d+)-/,`lines-${total.value}-`);el.id=el.id.replace(/lines-(\d+)-/,`lines-${total.value}-`);if(el.type==='checkbox')el.checked=false;else el.value='';});root.appendChild(clone);total.value=Number(total.value)+1;});})();
+</script>{% endblock %}

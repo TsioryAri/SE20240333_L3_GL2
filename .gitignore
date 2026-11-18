@@ -1,0 +1,38 @@
+# Environnements virtuels
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Django
+*.log
+*.sqlite3
+staticfiles/
+
+# Secrets
+.env
+.env.*
+
+# Conserver le modèle de configuration
+!.env.example
+
+# Médias : conserver les deux images de démonstration
+media/*
+!media/medicaments/
+media/medicaments/*
+!media/medicaments/para.jpeg
+!media/medicaments/cetirizine.jpg
+
+# Tests
+.pytest_cache/
+.coverage
+
+# Éditeurs
+.vscode/
+.idea/
+
+# Système
+.DS_Store
